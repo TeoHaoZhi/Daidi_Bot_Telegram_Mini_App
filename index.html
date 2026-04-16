@@ -3,494 +3,129 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Dai Di Tracker</title>
+<title>My Dai Di Tracker</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #00ff87;
-    --red: #ff4d6d;
-    --gold: #ffd166;
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --surface2: #1c1c28;
-    --border: rgba(255,255,255,0.07);
-    --text: #f0f0f0;
-    --muted: #666680;
-    --radius: 12px;
+    --green: #00ff87; --red: #ff4d6d; --gold: #ffd166; --bg: #0a0a0f;
+    --surface: #13131a; --surface2: #1c1c28; --border: rgba(255,255,255,0.07);
+    --text: #f0f0f0; --muted: #666680; --radius: 12px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── NOISE TEXTURE OVERLAY ── */
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; overflow-x: hidden; }
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
   }
-
   #app { position: relative; z-index: 1; padding: 16px; max-width: 480px; margin: 0 auto; }
-
-  /* ── HEADER ── */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 2px;
-    background: linear-gradient(135deg, var(--gold), var(--green));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .logo span { font-size: 14px; display: block; font-family: 'DM Mono', monospace; color: var(--muted); -webkit-text-fill-color: var(--muted); letter-spacing: 0; margin-top: -2px; }
-
-  /* ── SCREENS ── */
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; background: linear-gradient(135deg, var(--gold), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .logo span { font-size: 12px; display: block; font-family: 'DM Mono', monospace; color: var(--muted); -webkit-text-fill-color: var(--muted); letter-spacing: 0; }
   .screen { display: none; animation: fadeUp 0.25s ease; }
   .screen.active { display: block; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* ── SECTION LABEL ── */
-  .label {
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-
-  /* ── CARDS ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 12px;
-  }
-
-  /* ── PLAYER SCOREBOARD ── */
-  .player-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .player-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .player-row:last-child { border-bottom: none; }
-  .player-name { font-size: 14px; font-weight: 500; }
-  .player-name.host::after {
-    content: ' HOST';
-    font-size: 9px;
-    color: var(--gold);
-    letter-spacing: 1px;
-    margin-left: 6px;
-  }
-  .player-amount {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 1px;
-  }
-  .player-amount.pos { color: var(--green); }
-  .player-amount.neg { color: var(--red); }
-  .player-amount.zero { color: var(--muted); }
-
-  /* ── INPUT GROUP ── */
+  .player-name { font-size: 14px; }
+  .player-amount { font-family: 'Bebas Neue', sans-serif; font-size: 22px; }
+  .pos { color: var(--green); } .neg { color: var(--red); } .zero { color: var(--muted); }
   .input-group { margin-bottom: 14px; }
-  .input-group label { font-size: 11px; color: var(--muted); letter-spacing: 1px; display: block; margin-bottom: 6px; }
-  .input-group input, .input-group select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  .input-group input:focus, .input-group select:focus { border-color: var(--green); }
-
-  /* ── PLAYER COUNT STEPPER ── */
-  .stepper {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .stepper button {
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 20px;
-    padding: 12px 20px;
-    cursor: pointer;
-    font-family: 'DM Mono', monospace;
-    transition: background 0.15s;
-  }
-  .stepper button:active { background: rgba(255,255,255,0.08); }
-  .stepper span {
-    flex: 1;
-    text-align: center;
-    font-size: 18px;
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 2px;
-  }
-
-  /* ── PLAYER NAME INPUTS ── */
-  #player-name-inputs .player-input-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  #player-name-inputs .player-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    color: var(--muted);
-    width: 24px;
-    flex-shrink: 0;
-    text-align: center;
-  }
-  #player-name-inputs input {
-    flex: 1;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 11px 13px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  #player-name-inputs input:focus { border-color: var(--green); }
-  #player-name-inputs input::placeholder { color: var(--muted); }
-
-  /* ── CARD COUNT GRID ── */
-  .card-grid { display: grid; gap: 10px; }
-  .card-input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: 10px;
-  }
-  .card-input-row .pname {
-    font-size: 13px;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .card-input-row input {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 11px 13px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 15px;
-    outline: none;
-    text-align: center;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  .card-input-row input:focus { border-color: var(--green); }
-  .card-input-row.winner-row .pname { color: var(--gold); }
-  .card-input-row.winner-row input { border-color: rgba(255, 209, 102, 0.3); color: var(--gold); }
-
-  /* ── BUTTONS ── */
-  .btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: var(--radius);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    margin-top: 4px;
-  }
-  .btn:active { opacity: 0.8; transform: scale(0.98); }
+  .input-group label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 6px; }
+  .input-group input, .input-group select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'DM Mono', monospace; outline: none; }
+  .btn { width: 100%; padding: 14px; border: none; border-radius: var(--radius); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; cursor: pointer; margin-top: 4px; }
   .btn-primary { background: var(--green); color: #000; }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-gold { background: var(--gold); color: #000; }
-  .btn-ghost {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    font-size: 14px;
-    letter-spacing: 1px;
-    padding: 10px;
-    margin-top: 8px;
-  }
-
-  /* ── NAV TABS ── */
-  .nav {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 20px;
-  }
-  .nav-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.5px;
-    padding: 10px 4px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .nav-btn .icon { font-size: 16px; }
-  .nav-btn.active { background: var(--surface2); border-color: var(--green); color: var(--green); }
-
-  /* ── MONEYCOME CHOICE ── */
+  .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; }
+  .nav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 10px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-btn.active { border-color: var(--green); color: var(--green); }
   .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .choice-btn {
-    background: var(--surface2);
-    border: 2px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 16px 10px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s;
-    line-height: 1.4;
-  }
-  .choice-btn .big { font-family: 'Bebas Neue', sans-serif; font-size: 20px; display: block; margin-bottom: 4px; }
-  .choice-btn.selected { border-color: var(--gold); background: rgba(255,209,102,0.08); color: var(--gold); }
-
-  /* ── TOAST ── */
-  #toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 10px 20px;
-    font-size: 13px;
-    color: var(--text);
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 999;
-    white-space: nowrap;
-    pointer-events: none;
-  }
-  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* ── RESULT FLASH ── */
-  .result-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    animation: fadeUp 0.3s ease both;
-  }
-  .result-item:last-child { border-bottom: none; }
-  .delta { font-family: 'Bebas Neue', sans-serif; font-size: 18px; }
-  .delta.pos { color: var(--green); }
-  .delta.neg { color: var(--red); }
-
-  /* ── SETUP HINT ── */
-  .hint {
-    text-align: center;
-    color: var(--muted);
-    font-size: 12px;
-    padding: 32px 16px;
-    line-height: 1.8;
-  }
-  .hint .big { font-family: 'Bebas Neue', sans-serif; font-size: 40px; display: block; color: var(--border); letter-spacing: 3px; margin-bottom: 8px; }
-
-  /* ── CLEARDEBT ── */
-  .direction-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-  .dir-btn {
-    background: var(--surface2);
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 12px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s;
-  }
-  .dir-btn.selected-pay { border-color: var(--red); color: var(--red); background: rgba(255,77,109,0.08); }
-  .dir-btn.selected-receive { border-color: var(--green); color: var(--green); background: rgba(0,255,135,0.08); }
-
-  hr.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-
-  /* ── END GAME CONFIRM ── */
-  .end-box {
-    text-align: center;
-    padding: 24px 0;
-  }
-  .end-box .skull { font-size: 48px; margin-bottom: 12px; }
-  .end-box p { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 20px; }
+  .choice-btn { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px 10px; text-align: center; color: var(--muted); }
+  .choice-btn.selected { border-color: var(--gold); color: var(--gold); background: rgba(255,209,102,0.08); }
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface2); padding: 10px 20px; border-radius: 100px; font-size: 12px; opacity: 0; transition: 0.3s; z-index: 99; }
+  #toast.show { opacity: 1; }
+  .card-input-row { display: grid; grid-template-columns: 1fr 80px; align-items: center; gap: 10px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 <div id="app">
   <div class="header">
-    <div class="logo">DAI DI<span>Money Tracker 💰</span></div>
-    <div id="round-badge" style="font-family:'Bebas Neue';font-size:13px;color:var(--muted);letter-spacing:1px;display:none">RND <span id="round-num">0</span></div>
+    <div class="logo">DAI DI<span>Personal Tracker 👤</span></div>
   </div>
 
-  <!-- ══ SETUP SCREEN ══ -->
   <div class="screen active" id="screen-setup">
-    <div class="label">Setup Game</div>
+    <div class="label">New Game</div>
     <div class="card">
       <div class="input-group">
-        <label>NUMBER OF PLAYERS</label>
-        <div class="stepper">
-          <button onclick="adjustPlayers(-1)">−</button>
-          <span id="player-count-display">2</span>
-          <button onclick="adjustPlayers(1)">+</button>
-        </div>
+        <label>YOUR NAME</label>
+        <input type="text" id="my-name" placeholder="Me" maxlength="12">
       </div>
       <div class="input-group">
-        <label>PLAYER NAMES</label>
-        <div id="player-name-inputs"></div>
+        <label>OPPONENTS (Comma separated)</label>
+        <input type="text" id="opponent-names" placeholder="Jerica, Aloysius, Bob">
       </div>
     </div>
-    <button class="btn btn-primary" onclick="startGame()">START GAME</button>
+    <button class="btn btn-primary" onclick="startGame()">INITIALIZE TRACKER</button>
   </div>
 
-  <!-- ══ MAIN SCREEN ══ -->
   <div class="screen" id="screen-main">
     <div class="nav">
-      <button class="nav-btn active" onclick="showTab('tab-scores')" id="nav-scores">
-        <span class="icon">📊</span>scores
-      </button>
-      <button class="nav-btn" onclick="showTab('tab-round')" id="nav-round">
-        <span class="icon">🃏</span>round
-      </button>
-      <button class="nav-btn" onclick="showTab('tab-special')" id="nav-special">
-        <span class="icon">💸</span>special
-      </button>
-      <button class="nav-btn" onclick="showTab('tab-debt')" id="nav-debt">
-        <span class="icon">🤝</span>debt
-      </button>
+      <button class="nav-btn active" onclick="showTab('tab-scores')" id="nav-scores">📊 Scores</button>
+      <button class="nav-btn" onclick="showTab('tab-round')" id="nav-round">🃏 Round</button>
+      <button class="nav-btn" onclick="showTab('tab-special')" id="nav-special">💸 Special</button>
+      <button class="nav-btn" onclick="showTab('tab-debt')" id="nav-debt">🤝 Debt</button>
     </div>
 
-    <!-- SCORES TAB -->
     <div id="tab-scores">
-      <div class="label">Leaderboard</div>
+      <div class="label">My Balance vs Others</div>
       <div class="card" id="scoreboard"></div>
-      <button class="btn btn-danger" style="margin-top:16px" onclick="showTab('tab-end')">END GAME</button>
+      <button class="btn btn-danger" style="margin-top:20px" onclick="endGame()">RESET GAME</button>
     </div>
 
-    <!-- ROUND TAB -->
     <div id="tab-round" style="display:none">
-      <div class="label">Tabulate Round</div>
-      <div class="card">
-        <div class="input-group">
-          <label>WINNER (0 CARDS)</label>
-          <select id="winner-select" onchange="updateWinnerHighlight()">
-          </select>
-        </div>
-        <hr class="divider">
-        <div class="label">LOSERS — CARDS REMAINING</div>
-        <div class="card-grid" id="card-inputs"></div>
-      </div>
-      <button class="btn btn-primary" onclick="tabulate()">CALCULATE</button>
+      <div class="label">Input Card Counts</div>
+      <div class="card" id="card-inputs-container"></div>
+      <button class="btn btn-primary" onclick="tabulate()">CALCULATE MY P&L</button>
     </div>
 
-    <!-- SPECIAL TAB (moneycome) -->
     <div id="tab-special" style="display:none">
-      <div class="label">Money Come 💸</div>
+      <div class="label">Money Come</div>
       <div class="card">
-        <div class="input-group"><label>TYPE</label></div>
         <div class="choice-grid">
-          <div class="choice-btn selected" id="choice-4oak" onclick="selectMoneyType(1)">
-            <span class="big">4OAK</span>Four-of-a-Kind<br><small style="color:var(--muted)">$1</small>
-          </div>
-          <div class="choice-btn" id="choice-sf" onclick="selectMoneyType(2)">
-            <span class="big">SF</span>Straight Flush<br><small style="color:var(--muted)">$2</small>
-          </div>
+          <div class="choice-btn selected" id="choice-1" onclick="selectMoney(1)">4OAK ($1)</div>
+          <div class="choice-btn" id="choice-2" onclick="selectMoney(2)">SF ($2)</div>
         </div>
         <div class="input-group">
-          <label>WHO HAD MONEY COME?</label>
-          <select id="moneycome-player"></select>
+          <label>WHO GOT IT?</label>
+          <select id="money-who"></select>
         </div>
       </div>
-      <button class="btn btn-gold" onclick="applyMoneycome()">HUAT AH 💰</button>
+      <button class="btn btn-gold" onclick="applySpecial()">APPLY TO SCORES</button>
     </div>
 
-    <!-- DEBT TAB -->
     <div id="tab-debt" style="display:none">
-      <div class="label">Clear Debt</div>
+      <div class="label">Settle Up</div>
       <div class="card">
-        <div class="input-group"><label>DIRECTION</label></div>
-        <div class="direction-toggle">
-          <div class="dir-btn selected-pay" id="dir-pay" onclick="selectDirection('pay')">
-            💸 I PAID someone
-          </div>
-          <div class="dir-btn" id="dir-receive" onclick="selectDirection('receive')">
-            🤑 I RECEIVED from someone
-          </div>
+        <div class="input-group">
+            <label>I AM...</label>
+            <select id="debt-action">
+                <option value="pay">Paying someone</option>
+                <option value="receive">Receiving from someone</option>
+            </select>
         </div>
         <div class="input-group">
           <label>AMOUNT ($)</label>
-          <input type="number" id="debt-amount" placeholder="e.g. 5.00" step="0.01" min="0" inputmode="decimal" />
+          <input type="number" id="debt-amt" placeholder="0.00" step="0.01">
         </div>
         <div class="input-group">
-          <label id="debt-label">PAID TO (PLAYER)</label>
-          <select id="debt-player"></select>
+          <label>PLAYER</label>
+          <select id="debt-who"></select>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="applyDebt()">CONFIRM</button>
-    </div>
-
-    <!-- END GAME TAB -->
-    <div id="tab-end" style="display:none">
-      <div class="card end-box">
-        <div class="skull">💀</div>
-        <p>This will wipe all scores and player data. Make sure everyone has settled up!</p>
-        <div id="final-scores" style="text-align:left;margin-bottom:20px"></div>
-        <button class="btn btn-danger" onclick="endGame()">CONFIRM END GAME</button>
-        <button class="btn btn-ghost" onclick="showTab('tab-scores')">CANCEL</button>
-      </div>
+      <button class="btn btn-primary" onclick="applyDebt()">RECORD PAYMENT</button>
     </div>
   </div>
 </div>
@@ -498,339 +133,163 @@
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════
 let state = {
-  players: {},      // { name: amount } — first player is host (winner by default)
-  playerList: [],   // ordered list of names
-  round: 0,
-  moneyType: 1,
-  debtDirection: 'pay'
+  me: "",
+  opponents: {}, // { name: balance }
+  selectedMoneyType: 1
 };
 
-// ══════════════════════════════════════
-//  TELEGRAM INIT
-// ══════════════════════════════════════
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-  tg.setHeaderColor('#0a0a0f');
-  tg.setBackgroundColor('#0a0a0f');
-}
-
-// ══════════════════════════════════════
-//  SETUP
-// ══════════════════════════════════════
-let playerCount = 2;
-
-function adjustPlayers(delta) {
-  playerCount = Math.max(2, Math.min(4, playerCount + delta));
-  document.getElementById('player-count-display').textContent = playerCount;
-  renderNameInputs();
-}
-
-function renderNameInputs() {
-  const container = document.getElementById('player-name-inputs');
-  const existing = [...container.querySelectorAll('input')].map(i => i.value);
-  container.innerHTML = '';
-  for (let i = 0; i < playerCount; i++) {
-    const row = document.createElement('div');
-    row.className = 'player-input-row';
-    row.innerHTML = `
-      <span class="player-num">${i + 1}</span>
-      <input type="text" placeholder="Player ${i + 1} name${i === 0 ? ' (Host/Winner)' : ''}"
-             value="${existing[i] || ''}" maxlength="16" />
-    `;
-    container.appendChild(row);
-  }
-}
+if (tg) { tg.ready(); tg.expand(); }
 
 function startGame() {
-  const inputs = document.querySelectorAll('#player-name-inputs input');
-  const names = [...inputs].map(i => i.value.trim());
-  if (names.some(n => !n)) { showToast('Enter all player names!'); return; }
-  if (new Set(names).size !== names.length) { showToast('Names must be unique!'); return; }
+  const myName = document.getElementById('my-name').value.trim();
+  const opps = document.getElementById('opponent-names').value.split(',').map(n => n.trim()).filter(n => n);
 
-  state.playerList = names;
-  state.players = {};
-  names.forEach(n => state.players[n] = 0);
-  state.round = 0;
+  if (!myName || opps.length === 0) { showToast("Enter your name and opponents!"); return; }
+  
+  state.me = myName;
+  state.opponents = {};
+  opps.forEach(o => state.opponents[o] = 0);
 
-  buildMainUI();
-  switchScreen('screen-main');
-  showTab('tab-scores');
-}
-
-function buildMainUI() {
-  buildWinnerSelect();
-  buildCardInputs();
-  buildMoneycomeSelect();
-  buildDebtSelect();
+  renderCardInputs();
+  updateSelectors();
   renderScoreboard();
-  document.getElementById('round-badge').style.display = 'block';
+  
+  document.getElementById('screen-setup').classList.remove('active');
+  document.getElementById('screen-main').classList.add('active');
 }
 
-// ══════════════════════════════════════
-//  ROUND TAB — build inputs
-// ══════════════════════════════════════
-function buildWinnerSelect() {
-  const sel = document.getElementById('winner-select');
-  sel.innerHTML = state.playerList.map(n => `<option value="${n}">${n}</option>`).join('');
+function renderScoreboard() {
+  const container = document.getElementById('scoreboard');
+  let html = `<div class="player-row" style="border-bottom: 2px solid var(--border); margin-bottom: 10px;">
+    <span class="player-name" style="color:var(--gold)">${state.me} (ME)</span>
+    <span class="player-amount zero">$0.00</span>
+  </div>`;
+  
+  for (let name in state.opponents) {
+    const bal = state.opponents[name];
+    const cls = bal > 0 ? 'pos' : bal < 0 ? 'neg' : 'zero';
+    html += `<div class="player-row">
+      <span class="player-name">${name}</span>
+      <span class="player-amount ${cls}">${bal < 0 ? '-' : ''}$${Math.abs(bal).toFixed(2)}</span>
+    </div>`;
+  }
+  container.innerHTML = html;
 }
 
-function buildCardInputs() {
-  const grid = document.getElementById('card-inputs');
-  grid.innerHTML = '';
-  state.playerList.forEach((name, i) => {
-    const row = document.createElement('div');
-    row.className = 'card-input-row';
-    row.id = `card-row-${i}`;
-    row.innerHTML = `
-      <span class="pname">${name}</span>
-      <input type="number" id="cards-${i}" min="0" max="18" placeholder="0" inputmode="numeric" />
-    `;
-    grid.appendChild(row);
-  });
+function renderCardInputs() {
+  const container = document.getElementById('card-inputs-container');
+  let html = `<div class="card-input-row"><span class="player-name">${state.me} (Me)</span><input type="number" id="card-me" placeholder="0"></div>`;
+  for (let name in state.opponents) {
+    html += `<div class="card-input-row"><span class="player-name">${name}</span><input type="number" class="card-opp" data-name="${name}" placeholder="0"></div>`;
+  }
+  container.innerHTML = html;
 }
 
-function updateWinnerHighlight() {
-  const winner = document.getElementById('winner-select').value;
-  state.playerList.forEach((name, i) => {
-    const row = document.getElementById(`card-row-${i}`);
-    const input = document.getElementById(`cards-${i}`);
-    if (name === winner) {
-      row.classList.add('winner-row');
-      input.value = '0';
-      input.disabled = true;
-    } else {
-      row.classList.remove('winner-row');
-      input.disabled = false;
-    }
-  });
+function updateSelectors() {
+  const players = [state.me, ...Object.keys(state.opponents)];
+  const mWho = document.getElementById('money-who');
+  const dWho = document.getElementById('debt-who');
+  
+  const options = players.map(p => `<option value="${p}">${p}</option>`).join('');
+  mWho.innerHTML = options;
+  dWho.innerHTML = Object.keys(state.opponents).map(p => `<option value="${p}">${p}</option>`).join('');
 }
 
-// ══════════════════════════════════════
-//  TABULATE — exact same logic as bot
-// ══════════════════════════════════════
+function getMultiplier(cardno) {
+  if (cardno <= 0) return 0;
+  if (cardno < 10) return 1 + 0.2 * cardno;
+  if (cardno < 13) return 1 + 0.4 * cardno;
+  return 1 + 0.6 * cardno;
+}
+
 function tabulate() {
-  const winner = document.getElementById('winner-select').value;
-  const winnerIdx = state.playerList.indexOf(winner);
-
-  // Collect cards
-  let rawCards = [];
-  for (let i = 0; i < state.playerList.length; i++) {
-    if (state.playerList[i] === winner) {
-      rawCards.push(0);
-    } else {
-      const val = parseInt(document.getElementById(`cards-${i}`).value);
-      if (isNaN(val) || val < 0 || val > 18) {
-        showToast(`Invalid card count for ${state.playerList[i]}`);
-        return;
-      }
-      rawCards.push(val);
-    }
-  }
-
-  // Same logic as bot — compute multipliers
-  let cards = rawCards.map(cardno => {
-    if (cardno === 0) return 0;
-    if (cardno < 10)  return 1 + 0.2 * cardno;
-    if (cardno < 13)  return 1 + 0.4 * cardno;
-    return 1 + 0.6 * cardno;
+  const myCards = parseInt(document.getElementById('card-me').value) || 0;
+  const myMult = getMultiplier(myCards);
+  
+  const inputs = document.querySelectorAll('.card-opp');
+  inputs.forEach(input => {
+    const name = input.dataset.name;
+    const oppCards = parseInt(input.value) || 0;
+    const oppMult = getMultiplier(oppCards);
+    
+    // Logic: Opponent balance increases if they owe me more (I win)
+    // If I had 0 cards and they had 10: myMult=0, oppMult=5. Balance increases by 5.
+    const delta = oppMult - myMult;
+    state.opponents[name] = Math.round((state.opponents[name] + delta) * 100) / 100;
   });
-
-  // Relative to winner (index 0 equivalent is winner in our case)
-  // Bot: cards[i] = cards[i] - cards[0] for non-zero winner (winner always has 0)
-  // Winner earns sum of all losers' multipliers; each loser pays their own multiplier
-  let winnerEarns = 0;
-  for (let i = 0; i < cards.length; i++) {
-    if (state.playerList[i] !== winner) {
-      const loss = -(cards[i] - cards[winnerIdx]); // loser pays cards[i], winner offset is 0
-      state.players[state.playerList[i]] = round2(state.players[state.playerList[i]] - cards[i]);
-      winnerEarns += cards[i];
-    }
-  }
-  state.players[winner] = round2(state.players[winner] + winnerEarns);
-
-  state.round++;
-  document.getElementById('round-num').textContent = state.round;
 
   renderScoreboard();
   showTab('tab-scores');
-  showToast(`Round ${state.round} done ✓`);
-
-  // Reset card inputs for next round
-  state.playerList.forEach((_, i) => {
-    const inp = document.getElementById(`cards-${i}`);
-    if (inp) { inp.value = ''; inp.disabled = false; }
-    const row = document.getElementById(`card-row-${i}`);
-    if (row) row.classList.remove('winner-row');
-  });
-  document.getElementById('winner-select').selectedIndex = 0;
-
-  // Send to Telegram if available
-  sendToTelegram(`Round ${state.round} tabulated`);
+  showToast("Scores updated!");
 }
 
-// ══════════════════════════════════════
-//  MONEYCOME — exact same logic as bot
-// ══════════════════════════════════════
-function buildMoneycomeSelect() {
-  const sel = document.getElementById('moneycome-player');
-  sel.innerHTML = state.playerList.map(n => `<option value="${n}">${n}</option>`).join('');
+function selectMoney(amt) {
+  state.selectedMoneyType = amt;
+  document.getElementById('choice-1').classList.toggle('selected', amt === 1);
+  document.getElementById('choice-2').classList.toggle('selected', amt === 2);
 }
 
-function selectMoneyType(type) {
-  state.moneyType = type;
-  document.getElementById('choice-4oak').classList.toggle('selected', type === 1);
-  document.getElementById('choice-sf').classList.toggle('selected', type === 2);
-}
+function applySpecial() {
+  const who = document.getElementById('money-who').value;
+  const amt = state.selectedMoneyType;
 
-function applyMoneycome() {
-  const name = document.getElementById('moneycome-player').value;
-  const amount = state.moneyType;
-
-  // Bot logic: if winner → all others pay; if loser → they pay
-  if (name !== state.playerList[0]) {
-    // non-host had money come: they get -amount (they lost extra)
-    // Wait — bot logic: if name != players_list[0], they get -amount
-    // if name == players_list[0], all others get +amount
-    state.players[name] = round2(state.players[name] - amount);
+  if (who === state.me) {
+    // I got it! Every opponent owes me $amt
+    for (let name in state.opponents) state.opponents[name] += amt;
   } else {
-    for (let i = 1; i < state.playerList.length; i++) {
-      state.players[state.playerList[i]] = round2(state.players[state.playerList[i]] + amount);
-    }
+    // Someone else got it! I owe THAT specific person $amt
+    state.opponents[who] -= amt;
   }
-
+  
   renderScoreboard();
   showTab('tab-scores');
-  showToast('HUAT AH 💰');
-  sendToTelegram(`Money come: ${name} (${amount === 1 ? '4OAK' : 'Straight Flush'})`);
-}
-
-// ══════════════════════════════════════
-//  CLEAR DEBT — exact same logic as bot
-// ══════════════════════════════════════
-function buildDebtSelect() {
-  const sel = document.getElementById('debt-player');
-  sel.innerHTML = state.playerList.map(n => `<option value="${n}">${n}</option>`).join('');
-}
-
-function selectDirection(dir) {
-  state.debtDirection = dir;
-  document.getElementById('dir-pay').className = 'dir-btn' + (dir === 'pay' ? ' selected-pay' : '');
-  document.getElementById('dir-receive').className = 'dir-btn' + (dir === 'receive' ? ' selected-receive' : '');
-  document.getElementById('debt-label').textContent = dir === 'pay' ? 'PAID TO (PLAYER)' : 'RECEIVED FROM (PLAYER)';
+  showToast("Huat Ah!");
 }
 
 function applyDebt() {
-  const amtRaw = parseFloat(document.getElementById('debt-amount').value);
-  const name = document.getElementById('debt-player').value;
-  if (isNaN(amtRaw) || amtRaw <= 0) { showToast('Enter a valid amount!'); return; }
+  const amt = parseFloat(document.getElementById('debt-amt').value) || 0;
+  const who = document.getElementById('debt-who').value;
+  const action = document.getElementById('debt-action').value;
 
-  // Bot logic: players_dict[name] += paid_amount
-  // paid amount is positive if you paid them (their debt to you decreases = they get credit)
-  // negative if you received (they owe more)
-  const repayAmount = state.debtDirection === 'pay' ? amtRaw : -amtRaw;
-  state.players[name] = round2(state.players[name] + repayAmount);
+  if (amt <= 0) return;
+
+  // If I pay them, they owe me LESS (balance goes down)
+  // If I receive, they owe me LESS (balance goes down)
+  // Wait, in your tracker logic: "balance" is "What they owe me / Earnings from them"
+  if (action === 'pay') {
+    state.opponents[who] += amt; // I pay them, so technically relative balance towards me moves up? 
+    // Actually, following your original bot logic: players_dict[name] += paid_amount
+    // We will stick to: Paying them increases their "credit", receiving decreases it.
+  } else {
+    state.opponents[who] -= amt;
+  }
 
   renderScoreboard();
   showTab('tab-scores');
-  showToast('Debt recorded ✓');
-  document.getElementById('debt-amount').value = '';
-  sendToTelegram(`Debt cleared: $${amtRaw.toFixed(2)} ${state.debtDirection === 'pay' ? 'paid to' : 'received from'} ${name}`);
-}
-
-// ══════════════════════════════════════
-//  END GAME
-// ══════════════════════════════════════
-function showEndGame() {
-  showTab('tab-end');
-  const fs = document.getElementById('final-scores');
-  fs.innerHTML = '<div class="label" style="margin-bottom:8px">FINAL STANDINGS</div>' +
-    state.playerList.slice(1).map(p => {
-      const amt = state.players[p];
-      const cls = amt > 0 ? 'pos' : amt < 0 ? 'neg' : 'zero';
-      return `<div class="result-item"><span>${p}</span><span class="delta ${cls}">$${fmt(amt)}</span></div>`;
-    }).join('');
-}
-
-function endGame() {
-  sendToTelegram('Game ended');
-  state = { players: {}, playerList: [], round: 0, moneyType: 1, debtDirection: 'pay' };
-  document.getElementById('round-badge').style.display = 'none';
-  document.getElementById('player-count-display').textContent = '2';
-  playerCount = 2;
-  renderNameInputs();
-  switchScreen('screen-setup');
-  showToast('Game ended. Start a new one!');
-}
-
-// ══════════════════════════════════════
-//  SCOREBOARD RENDER
-// ══════════════════════════════════════
-function renderScoreboard() {
-  const sb = document.getElementById('scoreboard');
-  sb.innerHTML = state.playerList.map((name, i) => {
-    const amt = state.players[name];
-    const cls = amt > 0 ? 'pos' : amt < 0 ? 'neg' : 'zero';
-    const display = i === 0 ? `$${fmt(amt)}` : `$${fmt(amt)}`;
-    return `
-      <div class="player-row">
-        <span class="player-name${i === 0 ? ' host' : ''}">${name}</span>
-        <span class="player-amount ${cls}">${display}</span>
-      </div>`;
-  }).join('');
-}
-
-// ══════════════════════════════════════
-//  TELEGRAM COMMUNICATION
-// ══════════════════════════════════════
-function sendToTelegram(action) {
-  if (!tg) return;
-  const scores = state.playerList.map(n => `${n}: $${fmt(state.players[n])}`).join('\n');
-  tg.sendData(JSON.stringify({ action, scores, round: state.round }));
-}
-
-// ══════════════════════════════════════
-//  UI HELPERS
-// ══════════════════════════════════════
-function switchScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  showToast("Debt settled.");
+  document.getElementById('debt-amt').value = "";
 }
 
 function showTab(tabId) {
-  const tabs = ['tab-scores','tab-round','tab-special','tab-debt','tab-end'];
-  const navMap = { 'tab-scores':'nav-scores','tab-round':'nav-round','tab-special':'nav-special','tab-debt':'nav-debt' };
-  tabs.forEach(t => { const el = document.getElementById(t); if (el) el.style.display = 'none'; });
+  const tabs = ['tab-scores', 'tab-round', 'tab-special', 'tab-debt'];
+  tabs.forEach(t => document.getElementById(t).style.display = 'none');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const el = document.getElementById(tabId);
-  if (el) el.style.display = 'block';
-  if (navMap[tabId]) document.getElementById(navMap[tabId])?.classList.add('active');
-  if (tabId === 'tab-round') updateWinnerHighlight();
-  if (tabId === 'tab-end') showEndGame();
+  
+  document.getElementById(tabId).style.display = 'block';
+  document.getElementById('nav-' + tabId.split('-')[1]).classList.add('active');
 }
 
-let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-function round2(n) { return Math.round(n * 100) / 100; }
-function fmt(n) {
-  const abs = Math.abs(n).toFixed(2);
-  return n < 0 ? `-${abs}` : abs;
+function endGame() {
+  if (confirm("Reset everything?")) location.reload();
 }
-
-// ── INIT ──
-renderNameInputs();
 </script>
 </body>
 </html>
