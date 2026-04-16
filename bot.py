@@ -5,8 +5,8 @@ from threading import Thread
 import json
 
 # ---------- CONFIG ----------
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8406116569:AAHHyPYjaZtUnloWRkXZWDSzSyMpaOL7WX0")
-WEBAPP_URL = os.environ.get("WEBAPP_URL", "https://YOUR_HOSTED_URL/daidi_miniapp.html")  # ← change this
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+WEBAPP_URL = os.environ.get("WEBAPP_URL", "https://teohaozhi.github.io/Daidi_Bot_Telegram_Mini_App/")  # ← change this
 
 if not BOT_TOKEN:
     print("Error: BOT_TOKEN not set.")
