@@ -43,16 +43,50 @@
   .btn-primary { background: var(--green); color: #000; }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-gold { background: var(--gold); color: #000; }
+  .btn-ghost { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
   .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; }
-  .nav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 12px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 12px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
   .nav-btn.active { border-color: var(--green); color: var(--green); }
   .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .choice-btn { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius); padding: 18px 10px; text-align: center; color: var(--muted); font-size: 16px; }
+  .choice-btn { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius); padding: 18px 10px; text-align: center; color: var(--muted); font-size: 16px; cursor: pointer; }
   .choice-btn.selected { border-color: var(--gold); color: var(--gold); background: rgba(255,209,102,0.08); }
-  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface2); padding: 12px 22px; border-radius: 100px; font-size: 15px; opacity: 0; transition: 0.3s; z-index: 99; }
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface2); padding: 12px 22px; border-radius: 100px; font-size: 15px; opacity: 0; transition: 0.3s; z-index: 99; white-space: nowrap; }
   #toast.show { opacity: 1; }
-  .card-input-row { display: grid; grid-template-columns: 1fr 90px; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .card-input-row input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 16px; outline: none; text-align: center; }
+
+  /* Stepper */
+  .card-input-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+  .card-input-row .player-name { flex: 1; }
+  .stepper { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .stepper-btn { background: var(--surface2); border: none; color: var(--text); font-size: 24px; width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; flex-shrink: 0; }
+  .stepper-btn:active { background: rgba(255,255,255,0.1); }
+  .stepper-val { background: var(--bg); color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 24px; width: 48px; text-align: center; height: 48px; line-height: 48px; }
+
+  /* Confirm modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s ease; }
+  .modal-overlay.hidden { display: none; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px 20px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 480px; animation: slideUp 0.25s ease; }
+  @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--gold); margin-bottom: 16px; }
+  .modal-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+  .modal-row:last-of-type { border-bottom: none; }
+  .modal-row .mname { color: var(--muted); }
+  .modal-row .mcards { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--text); }
+  .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+
+  /* History */
+  .history-entry { background: var(--surface2); border-radius: 10px; padding: 14px; margin-bottom: 10px; border-left: 3px solid var(--border); }
+  .history-entry.latest { border-left-color: var(--green); }
+  .history-round-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .history-detail { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 14px; }
+  .delta-pos { color: var(--green); font-family: 'Bebas Neue', sans-serif; font-size: 18px; }
+  .delta-neg { color: var(--red); font-family: 'Bebas Neue', sans-serif; font-size: 18px; }
+  .delta-zero { color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 18px; }
+  .no-history { text-align: center; color: var(--muted); font-size: 14px; padding: 48px 0; }
+  .history-divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+  .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .undo-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; padding: 8px 14px; cursor: pointer; }
+  .undo-btn:active { color: var(--red); border-color: var(--red); }
 </style>
 </head>
 <body>
@@ -87,13 +121,14 @@
     <div id="tab-scores">
       <div class="label">My Balance vs Others</div>
       <div class="card" id="scoreboard"></div>
-      <button class="btn btn-danger" style="margin-top:20px" onclick="endGame()">RESET GAME</button>
+      <button class="btn btn-ghost" style="margin-top:10px; font-size:18px;" onclick="showTab('tab-history')">📜 ROUND HISTORY</button>
+      <button class="btn btn-danger" style="margin-top:10px;" onclick="endGame()">RESET GAME</button>
     </div>
 
     <div id="tab-round" style="display:none">
       <div class="label">Input Card Counts</div>
       <div class="card" id="card-inputs-container"></div>
-      <button class="btn btn-primary" onclick="tabulate()">CALCULATE MY P&L</button>
+      <button class="btn btn-primary" onclick="confirmTabulate()">CALCULATE MY P&amp;L</button>
     </div>
 
     <div id="tab-special" style="display:none">
@@ -115,15 +150,15 @@
       <div class="label">Settle Up</div>
       <div class="card">
         <div class="input-group">
-            <label>I AM...</label>
-            <select id="debt-action">
-                <option value="pay">Paying someone</option>
-                <option value="receive">Receiving from someone</option>
-            </select>
+          <label>I AM...</label>
+          <select id="debt-action">
+            <option value="pay">Paying someone</option>
+            <option value="receive">Receiving from someone</option>
+          </select>
         </div>
         <div class="input-group">
           <label>AMOUNT ($)</label>
-          <input type="number" id="debt-amt" placeholder="0.00" step="0.01" style="font-size:16px;">
+          <input type="number" id="debt-amt" placeholder="0.00" step="0.01">
         </div>
         <div class="input-group">
           <label>PLAYER</label>
@@ -131,6 +166,26 @@
         </div>
       </div>
       <button class="btn btn-primary" onclick="applyDebt()">RECORD PAYMENT</button>
+    </div>
+
+    <div id="tab-history" style="display:none">
+      <div class="history-header">
+        <div class="label" style="margin-bottom:0">Round History</div>
+        <button class="undo-btn" onclick="undoLast()">↩ UNDO LAST</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay hidden" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-title">✋ Double Check</div>
+    <div id="confirm-rows"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" style="margin-top:0; font-size:18px;" onclick="closeModal()">← EDIT</button>
+      <button class="btn btn-primary" style="margin-top:0; font-size:20px;" onclick="tabulate()">CONFIRM ✓</button>
     </div>
   </div>
 </div>
@@ -140,8 +195,11 @@
 <script>
 let state = {
   me: "",
-  opponents: {}, // { name: balance }
-  selectedMoneyType: 1
+  opponents: {},
+  selectedMoneyType: 1,
+  roundNum: 0,
+  history: [],
+  pendingCards: {}
 };
 
 const tg = window.Telegram?.WebApp;
@@ -150,28 +208,28 @@ if (tg) { tg.ready(); tg.expand(); }
 function startGame() {
   const myName = document.getElementById('my-name').value.trim();
   const opps = document.getElementById('opponent-names').value.split(',').map(n => n.trim()).filter(n => n);
-
   if (!myName || opps.length === 0) { showToast("Enter your name and opponents!"); return; }
-  
+
   state.me = myName;
   state.opponents = {};
+  state.history = [];
+  state.roundNum = 0;
   opps.forEach(o => state.opponents[o] = 0);
 
   renderCardInputs();
   updateSelectors();
   renderScoreboard();
-  
+
   document.getElementById('screen-setup').classList.remove('active');
   document.getElementById('screen-main').classList.add('active');
 }
 
 function renderScoreboard() {
   const container = document.getElementById('scoreboard');
-  let html = `<div class="player-row" style="border-bottom: 2px solid var(--border); margin-bottom: 10px;">
+  let html = `<div class="player-row" style="border-bottom: 2px solid var(--border); margin-bottom:10px;">
     <span class="player-name" style="color:var(--gold)">${state.me} (ME)</span>
     <span class="player-amount zero">$0.00</span>
   </div>`;
-  
   for (let name in state.opponents) {
     const bal = state.opponents[name];
     const cls = bal > 0 ? 'pos' : bal < 0 ? 'neg' : 'zero';
@@ -185,21 +243,48 @@ function renderScoreboard() {
 
 function renderCardInputs() {
   const container = document.getElementById('card-inputs-container');
-  let html = `<div class="card-input-row"><span class="player-name">${state.me} (Me)</span><input type="number" id="card-me" placeholder="0" min="0" max="13"></div>`;
-  for (let name in state.opponents) {
-    html += `<div class="card-input-row"><span class="player-name">${name}</span><input type="number" class="card-opp" data-name="${name}" placeholder="0" min="0" max="13"></div>`;
-  }
-  container.innerHTML = html;
+  const players = [{ key: 'me', label: `${state.me} (Me)` }, ...Object.keys(state.opponents).map(n => ({ key: n, label: n }))];
+  container.innerHTML = players.map(p => `
+    <div class="card-input-row">
+      <span class="player-name">${p.label}</span>
+      <div class="stepper">
+        <button class="stepper-btn" onclick="stepCard('${p.key}', -1)">−</button>
+        <div class="stepper-val" id="step-${p.key}">0</div>
+        <button class="stepper-btn" onclick="stepCard('${p.key}', 1)">+</button>
+      </div>
+    </div>
+  `).join('');
 }
 
-function updateSelectors() {
-  const players = [state.me, ...Object.keys(state.opponents)];
-  const mWho = document.getElementById('money-who');
-  const dWho = document.getElementById('debt-who');
-  
-  const options = players.map(p => `<option value="${p}">${p}</option>`).join('');
-  mWho.innerHTML = options;
-  dWho.innerHTML = Object.keys(state.opponents).map(p => `<option value="${p}">${p}</option>`).join('');
+function stepCard(key, delta) {
+  const el = document.getElementById('step-' + key);
+  let val = parseInt(el.textContent) || 0;
+  val = Math.max(0, Math.min(13, val + delta));
+  el.textContent = val;
+}
+
+function getCardValues() {
+  const vals = { me: parseInt(document.getElementById('step-me').textContent) || 0 };
+  for (let name in state.opponents) {
+    vals[name] = parseInt(document.getElementById('step-' + name)?.textContent) || 0;
+  }
+  return vals;
+}
+
+function confirmTabulate() {
+  const cards = getCardValues();
+  state.pendingCards = cards;
+  const rows = [
+    `<div class="modal-row"><span class="mname">${state.me} (Me)</span><span class="mcards">${cards['me']} cards</span></div>`,
+    ...Object.keys(state.opponents).map(name =>
+      `<div class="modal-row"><span class="mname">${name}</span><span class="mcards">${cards[name]} cards</span></div>`)
+  ];
+  document.getElementById('confirm-rows').innerHTML = rows.join('');
+  document.getElementById('confirm-modal').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('confirm-modal').classList.add('hidden');
 }
 
 function getMultiplier(cardno) {
@@ -210,26 +295,64 @@ function getMultiplier(cardno) {
 }
 
 function tabulate() {
-  const myCards = parseInt(document.getElementById('card-me').value) || 0;
-  const myMult = getMultiplier(myCards);
-  
-  const inputs = document.querySelectorAll('.card-opp');
-  inputs.forEach(input => {
-    const name = input.dataset.name;
-    const oppCards = parseInt(input.value) || 0;
-    const oppMult = getMultiplier(oppCards);
-    
-    const delta = oppMult - myMult;
+  closeModal();
+  const cards = state.pendingCards;
+  const myMult = getMultiplier(cards['me']);
+
+  const snapshot = {};
+  for (let name in state.opponents) snapshot[name] = state.opponents[name];
+
+  const deltas = {};
+  for (let name in state.opponents) {
+    const delta = getMultiplier(cards[name]) - myMult;
+    deltas[name] = Math.round(delta * 100) / 100;
     state.opponents[name] = Math.round((state.opponents[name] + delta) * 100) / 100;
-  });
+  }
+
+  state.roundNum++;
+  state.history.push({ round: state.roundNum, snapshot, cards: { ...cards }, deltas });
 
   renderScoreboard();
-
-  // ✅ Clear all card inputs after tabulating
   renderCardInputs();
-
   showTab('tab-scores');
-  showToast("Scores updated!");
+  showToast(`Round ${state.roundNum} done! ✅`);
+}
+
+function undoLast() {
+  if (state.history.length === 0) { showToast("Nothing to undo!"); return; }
+  const last = state.history.pop();
+  for (let name in last.snapshot) state.opponents[name] = last.snapshot[name];
+  state.roundNum--;
+  renderScoreboard();
+  renderHistory();
+  showToast("↩ Round " + (state.roundNum + 1) + " undone!");
+}
+
+function renderHistory() {
+  const container = document.getElementById('history-list');
+  if (state.history.length === 0) {
+    container.innerHTML = `<div class="no-history">No rounds played yet 🃏</div>`;
+    return;
+  }
+  container.innerHTML = [...state.history].reverse().map((entry, i) => {
+    const isLatest = i === 0;
+    const cardLines = Object.entries(entry.cards).map(([key, count]) => {
+      const label = key === 'me' ? `${state.me} (Me)` : key;
+      return `<div class="history-detail"><span>${label}</span><span style="color:var(--muted);font-family:'Bebas Neue';font-size:18px;">${count} cards</span></div>`;
+    }).join('');
+    const deltaLines = Object.entries(entry.deltas).map(([name, d]) => {
+      const cls = d > 0 ? 'delta-pos' : d < 0 ? 'delta-neg' : 'delta-zero';
+      const sign = d > 0 ? '+' : '';
+      return `<div class="history-detail"><span style="color:var(--muted)">${name}</span><span class="${cls}">${sign}$${Math.abs(d).toFixed(2)}</span></div>`;
+    }).join('');
+    return `<div class="history-entry ${isLatest ? 'latest' : ''}">
+      <div class="history-round-label">Round ${entry.round}${isLatest ? ' — latest' : ''}</div>
+      ${cardLines}
+      <hr class="history-divider">
+      <div class="history-round-label">P&L vs Me</div>
+      ${deltaLines}
+    </div>`;
+  }).join('');
 }
 
 function selectMoney(amt) {
@@ -241,55 +364,60 @@ function selectMoney(amt) {
 function applySpecial() {
   const who = document.getElementById('money-who').value;
   const amt = state.selectedMoneyType;
-
   if (who === state.me) {
     for (let name in state.opponents) state.opponents[name] += amt;
   } else {
     state.opponents[who] -= amt;
   }
-  
   renderScoreboard();
   showTab('tab-scores');
-  showToast("Huat Ah!");
+  showToast("Huat Ah! 🤑");
 }
 
 function applyDebt() {
   const amt = parseFloat(document.getElementById('debt-amt').value) || 0;
   const who = document.getElementById('debt-who').value;
   const action = document.getElementById('debt-action').value;
-
   if (amt <= 0) return;
-
-  if (action === 'pay') {
-    state.opponents[who] += amt;
-  } else {
-    state.opponents[who] -= amt;
-  }
-
+  state.opponents[who] = Math.round(((action === 'pay' ? state.opponents[who] + amt : state.opponents[who] - amt)) * 100) / 100;
   renderScoreboard();
   showTab('tab-scores');
-  showToast("Debt settled.");
+  showToast("Debt settled. 🤝");
   document.getElementById('debt-amt').value = "";
 }
 
+function updateSelectors() {
+  const players = [state.me, ...Object.keys(state.opponents)];
+  document.getElementById('money-who').innerHTML = players.map(p => `<option value="${p}">${p}</option>`).join('');
+  document.getElementById('debt-who').innerHTML = Object.keys(state.opponents).map(p => `<option value="${p}">${p}</option>`).join('');
+}
+
 function showTab(tabId) {
-  const tabs = ['tab-scores', 'tab-round', 'tab-special', 'tab-debt'];
-  tabs.forEach(t => document.getElementById(t).style.display = 'none');
+  ['tab-scores','tab-round','tab-special','tab-debt','tab-history'].forEach(t => {
+    document.getElementById(t).style.display = 'none';
+  });
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  
   document.getElementById(tabId).style.display = 'block';
-  document.getElementById('nav-' + tabId.split('-')[1]).classList.add('active');
+  const navKey = tabId === 'tab-history' ? 'scores' : tabId.split('-')[1];
+  const navEl = document.getElementById('nav-' + navKey);
+  if (navEl) navEl.classList.add('active');
+  if (tabId === 'tab-history') renderHistory();
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 function endGame() {
   if (confirm("Reset everything?")) location.reload();
 }
+
+document.getElementById('confirm-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
 </script>
 </body>
 </html>
