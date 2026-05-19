@@ -13,41 +13,46 @@
     --text: #f0f0f0; --muted: #666680; --radius: 12px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
   body::before {
     content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   }
   #app { position: relative; z-index: 1; padding: 16px; max-width: 480px; margin: 0 auto; }
   .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; background: linear-gradient(135deg, var(--gold), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .logo span { font-size: 12px; display: block; font-family: 'DM Mono', monospace; color: var(--muted); -webkit-text-fill-color: var(--muted); letter-spacing: 0; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 2px; background: linear-gradient(135deg, var(--gold), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .logo span { font-size: 14px; display: block; font-family: 'DM Mono', monospace; color: var(--muted); -webkit-text-fill-color: var(--muted); letter-spacing: 0; }
   .screen { display: none; animation: fadeUp 0.25s ease; }
   .screen.active { display: block; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .label { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
-  .player-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .player-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
   .player-row:last-child { border-bottom: none; }
-  .player-name { font-size: 14px; }
-  .player-amount { font-family: 'Bebas Neue', sans-serif; font-size: 22px; }
+  .player-name { font-size: 16px; }
+  .player-amount { font-family: 'Bebas Neue', sans-serif; font-size: 26px; }
   .pos { color: var(--green); } .neg { color: var(--red); } .zero { color: var(--muted); }
   .input-group { margin-bottom: 14px; }
-  .input-group label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 6px; }
-  .input-group input, .input-group select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'DM Mono', monospace; outline: none; }
-  .btn { width: 100%; padding: 14px; border: none; border-radius: var(--radius); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; cursor: pointer; margin-top: 4px; }
+  .input-group label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; }
+  .input-group input, .input-group select {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px; color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 16px; outline: none;
+  }
+  .btn { width: 100%; padding: 16px; border: none; border-radius: var(--radius); font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; cursor: pointer; margin-top: 4px; }
   .btn-primary { background: var(--green); color: #000; }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-gold { background: var(--gold); color: #000; }
   .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; }
-  .nav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 10px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 12px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .nav-btn.active { border-color: var(--green); color: var(--green); }
   .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .choice-btn { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px 10px; text-align: center; color: var(--muted); }
+  .choice-btn { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius); padding: 18px 10px; text-align: center; color: var(--muted); font-size: 16px; }
   .choice-btn.selected { border-color: var(--gold); color: var(--gold); background: rgba(255,209,102,0.08); }
-  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface2); padding: 10px 20px; border-radius: 100px; font-size: 12px; opacity: 0; transition: 0.3s; z-index: 99; }
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface2); padding: 12px 22px; border-radius: 100px; font-size: 15px; opacity: 0; transition: 0.3s; z-index: 99; }
   #toast.show { opacity: 1; }
-  .card-input-row { display: grid; grid-template-columns: 1fr 80px; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .card-input-row { display: grid; grid-template-columns: 1fr 90px; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .card-input-row input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 16px; outline: none; text-align: center; }
 </style>
 </head>
 <body>
@@ -118,7 +123,7 @@
         </div>
         <div class="input-group">
           <label>AMOUNT ($)</label>
-          <input type="number" id="debt-amt" placeholder="0.00" step="0.01">
+          <input type="number" id="debt-amt" placeholder="0.00" step="0.01" style="font-size:16px;">
         </div>
         <div class="input-group">
           <label>PLAYER</label>
@@ -180,9 +185,9 @@ function renderScoreboard() {
 
 function renderCardInputs() {
   const container = document.getElementById('card-inputs-container');
-  let html = `<div class="card-input-row"><span class="player-name">${state.me} (Me)</span><input type="number" id="card-me" placeholder="0"></div>`;
+  let html = `<div class="card-input-row"><span class="player-name">${state.me} (Me)</span><input type="number" id="card-me" placeholder="0" min="0" max="13"></div>`;
   for (let name in state.opponents) {
-    html += `<div class="card-input-row"><span class="player-name">${name}</span><input type="number" class="card-opp" data-name="${name}" placeholder="0"></div>`;
+    html += `<div class="card-input-row"><span class="player-name">${name}</span><input type="number" class="card-opp" data-name="${name}" placeholder="0" min="0" max="13"></div>`;
   }
   container.innerHTML = html;
 }
@@ -214,13 +219,15 @@ function tabulate() {
     const oppCards = parseInt(input.value) || 0;
     const oppMult = getMultiplier(oppCards);
     
-    // Logic: Opponent balance increases if they owe me more (I win)
-    // If I had 0 cards and they had 10: myMult=0, oppMult=5. Balance increases by 5.
     const delta = oppMult - myMult;
     state.opponents[name] = Math.round((state.opponents[name] + delta) * 100) / 100;
   });
 
   renderScoreboard();
+
+  // ✅ Clear all card inputs after tabulating
+  renderCardInputs();
+
   showTab('tab-scores');
   showToast("Scores updated!");
 }
@@ -236,10 +243,8 @@ function applySpecial() {
   const amt = state.selectedMoneyType;
 
   if (who === state.me) {
-    // I got it! Every opponent owes me $amt
     for (let name in state.opponents) state.opponents[name] += amt;
   } else {
-    // Someone else got it! I owe THAT specific person $amt
     state.opponents[who] -= amt;
   }
   
@@ -255,13 +260,8 @@ function applyDebt() {
 
   if (amt <= 0) return;
 
-  // If I pay them, they owe me LESS (balance goes down)
-  // If I receive, they owe me LESS (balance goes down)
-  // Wait, in your tracker logic: "balance" is "What they owe me / Earnings from them"
   if (action === 'pay') {
-    state.opponents[who] += amt; // I pay them, so technically relative balance towards me moves up? 
-    // Actually, following your original bot logic: players_dict[name] += paid_amount
-    // We will stick to: Paying them increases their "credit", receiving decreases it.
+    state.opponents[who] += amt;
   } else {
     state.opponents[who] -= amt;
   }
