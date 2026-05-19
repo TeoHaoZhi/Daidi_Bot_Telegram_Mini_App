@@ -2,10 +2,12 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 from threading import Thread
+from dotenv import load_dotenv 
 import json
 
 # ---------- CONFIG ----------
-BOT_TOKEN = "8406116569:AAHHyPYjaZtUnloWRkXZWDSzSyMpaOL7WX0"
+load_dotenv()      
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 WEBAPP_URL = os.environ.get("WEBAPP_URL", "https://teohaozhi.github.io/Daidi_Bot_Telegram_Mini_App/")  # ← change this
 
 if not BOT_TOKEN:
